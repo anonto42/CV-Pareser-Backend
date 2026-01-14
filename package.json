@@ -5,7 +5,7 @@
   "license": "ISC",
   "author": "Sohidul Islam Ananto <anontom90@gmail.com>",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon",
