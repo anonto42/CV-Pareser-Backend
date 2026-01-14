@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from 'express';
-import config from '../config/env.config';
+import config from '../config';
 import { IErrorMessage } from '../../shared/types/errors.types';
 import ApiError from '../error/apiError';
 import handleZodError from '../error/zodError';
