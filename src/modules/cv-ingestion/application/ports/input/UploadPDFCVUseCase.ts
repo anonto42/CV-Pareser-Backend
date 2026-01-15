@@ -1,4 +1,4 @@
 
 export interface UploadPDFCVUseCase {
-  execute(file: string): Promise<string>;
+  execute(file: File): Promise<string>;
 }
