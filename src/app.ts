@@ -14,6 +14,9 @@ export const createApp = (): Application => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  //file retrieve
+  app.use(express.static('uploads'));
+
   // Health check
   app.get('/health', (_req, res) => {
     res.status(200).json({ status: 'ok' });
