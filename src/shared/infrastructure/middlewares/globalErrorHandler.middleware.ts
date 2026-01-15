@@ -1,8 +1,8 @@
 import { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 import { IErrorMessage } from '../../types/errorMessage.type';
-import zodError from '../error/zod.error';
+import zodError from '../errors/zod.error';
 import config from '../config';
-import ApiError from '../error/api.error';
+import ApiError from '../errors/api.error';
 
 const globalErrorHandler: ErrorRequestHandler = (
   error: any,
