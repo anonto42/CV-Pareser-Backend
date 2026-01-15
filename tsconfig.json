@@ -1,5 +1,5 @@
 {
-  "include": ["src-2", "src/routes.ts", "src/shared/infrastructure/config/index.ts", "src/shared/infrastructure/middlewares/validateRequest.middleware.ts", "src/shared/infrastructure/middlewares/apiNotFoundErrorHandler.middleware.ts", "src/shared/infrastructure/helper/sendResponse.helper.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "target": "es2016",
