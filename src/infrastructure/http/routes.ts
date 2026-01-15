@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { TestController } from '../../hexagons/test/testController';
+import { CvIngestionController } from '../../hexagons/cv-ingestion/adapters/http/CVUploadController';
 
 export const Routes = (): Router => {
   const apiRouter = Router();
@@ -7,10 +7,11 @@ export const Routes = (): Router => {
   // Defiend endpoients
   [
     {
-      path: '/test',
-      route: TestController.getRouter(),
+      path: '/cv-ingestion',
+      route: CvIngestionController.getRouter(),
     },
   ].forEach(router => apiRouter.use(router.path, router.route));
 
   return apiRouter;
 };
+ 
