@@ -5,3 +5,4 @@
 .yarnrc.lock
 .env
 !.env.example
+/uploads
