@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from 'express';
-import config from '../config';
+import config from '../../shared/infrastructure/config';
 import { IErrorMessage } from '../../shared/types/errors.types';
 import ApiError from '../error/apiError';
 import handleZodError from '../error/zodError';
@@ -42,7 +42,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res,) => {
     success: false,
     message,
     errorMessages,
-    stack: config.node_env !== 'production' ? error?.stack : undefined,
+    stack: config.server.node_env !== 'production' ? error?.stack : undefined,
   });
 };
 
