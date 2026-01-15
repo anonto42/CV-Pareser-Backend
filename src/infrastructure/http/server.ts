@@ -1,6 +1,5 @@
-import { Application } from 'express';
 import { createApp } from './app';
-import config from '../config';
+import config from '../../shared/infrastructure/config';
 
 async function main() {
   try {
@@ -8,9 +7,9 @@ async function main() {
     const server = createApp();
     
     server.listen(
-      config.port,
-      config.host,
-      () => console.log(`Server is running on port ${config.port}`)
+      config.server.port,
+      config.server.host,
+      () => console.log(`Server is running on port ${config.server.port}`)
     );
 
   } catch (error) {
