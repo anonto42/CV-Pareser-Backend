@@ -4,7 +4,7 @@ import { CVRepositoryAdapter } from '../adapters/output/persistence/CVRepository
 import { FileParserAdapter } from '../adapters/output/parsers/FileParser.adapter';
 import { CvIngestionController } from '../adapters/input/http/controllers/CvIngestion.controller';
 import { CvIngestionRoutes } from '../adapters/input/http/routes/cvIngestion.routes';
-import { DataForProcessUseCaseImpl } from '../../../cv-process/application/usecases/DataForProcess.usecase';
+import { CvProcessContainer } from '../../../cv-process/infrastructure/di/cvProcess.container';
 
 export class CvIngestionContainer {
   static createRouter(): Router {
@@ -14,7 +14,7 @@ export class CvIngestionContainer {
     const fileParser = new FileParserAdapter();
 
     // External dependencies
-    const DataForProcessUseCase = new DataForProcessUseCaseImpl(); 
+    const DataForProcessUseCase = CvProcessContainer.createDataForProcessUseCase();
 
     // Create use cases
     const uploadPdfUseCase = new UploadPDFCVUseCaseImpl(
