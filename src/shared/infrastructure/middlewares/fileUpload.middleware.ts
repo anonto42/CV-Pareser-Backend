@@ -33,7 +33,8 @@ export class FileUploadMiddleware {
             );
           }
 
-          const uploadDir = path.join(process.cwd(), config.destination);
+          const uploadDir = config.destination;
+          // const uploadDir = path.join(process.cwd(), config.destination);
           FileSystemHelper.createDirIfNotExists(uploadDir);
           cb(null, uploadDir);
         } catch (error: any) {
@@ -57,7 +58,7 @@ export class FileUploadMiddleware {
   private static getMemoryStorage() {
     return multer.memoryStorage();
   }
-
+  
   // File filter
   private static fileFilter(
     req: Request,
