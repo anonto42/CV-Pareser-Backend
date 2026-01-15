@@ -1,4 +1,5 @@
+import { SingleFile } from "../../../../../shared/types/singleFile.type";
 
 export interface UploadPDFCVUseCase {
-  execute(file: File): Promise<string>;
+  execute(file: SingleFile): Promise<string>;
 }
