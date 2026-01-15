@@ -1,10 +1,15 @@
-import { ErrorRequestHandler } from 'express';
+import { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 import { IErrorMessage } from '../../types/errorMessage.type';
 import zodError from '../error/zod.error';
 import config from '../config';
 import ApiError from '../error/api.error';
 
-const globalErrorHandler: ErrorRequestHandler = (error, req, res,) => {
+const globalErrorHandler: ErrorRequestHandler = (
+  error: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   let statusCode = 500;
   let message = 'Something went wrong';
   let errorMessages: IErrorMessage[] = [];
@@ -32,10 +37,18 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res,) => {
       ? [
           {
             path: '',
-            message: error?.message,
+            message: error.message,
           },
         ]
       : [];
+  }
+
+  if (config.server.node_env !== 'production') {
+    console.error('❌ Error:', {
+      statusCode,
+      message,
+      stack: error?.stack,
+    });
   }
 
   res.status(statusCode).json({
