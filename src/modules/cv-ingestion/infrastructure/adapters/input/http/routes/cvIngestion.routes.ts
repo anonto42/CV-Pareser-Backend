@@ -1,10 +1,8 @@
 import { Router } from 'express';
-import multer from 'multer';
 import { CvIngestionController } from '../controllers/CvIngestion.controller';
 import validateRequest from '../../../../../../../shared/infrastructure/middlewares/validateRequest.middleware';
 import { CVIngestionValidator } from './../validator/cvIngestion.validator';
-
-const upload = multer({ storage: multer.memoryStorage() });
+import { uploadSingleCVToDisk } from './../../../../../../../shared/infrastructure/middlewares/fileUpload.middleware';
 
 export class CvIngestionRoutes {
   public router: Router;
@@ -20,6 +18,7 @@ export class CvIngestionRoutes {
     this.router
     .route('/upload-pdf')
     .post(
+      uploadSingleCVToDisk,
       validateRequest(CVIngestionValidator.pdfUpload),
       this.controller.uploadPDF
     );
