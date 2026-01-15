@@ -6,7 +6,7 @@ import { FileParserReturs } from "../../dto/FileParserReturs.dto";
 
 export class FileParserAdapter implements FileParserPort {
 
-  async parsePDF(file: SingleFile): Promise<any> {
+  async parsePDF(file: SingleFile): Promise<FileParserReturs> {
     try {
       const fileBuffer = fs.readFileSync(file.path);
       const pdfParserRes = await pdfParser(fileBuffer);
