@@ -25,7 +25,7 @@ export default {
   },
 
   vector: {
-    dimension: 1536, // OpenAI embedding dimension
+    dimension: 384, // Xenova embedding dimension
     collection: 'cv_embeddings',
   },
 
