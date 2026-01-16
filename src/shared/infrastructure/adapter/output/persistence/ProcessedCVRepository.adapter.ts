@@ -1,23 +1,18 @@
 import { ProcessedCVRepositoryPort } from "../../../../application/port/output/ProcessedCVRepository.port";
 import { StructuredCV } from "../../../../application/dto/StructuredCV.dto";
 import { VectorRecord } from "../../../../application/dto/VectorRecord.dto";
-import config from "../../../config";
-import { Pool } from "pg";
+import { getPool } from "../../../config/database";
 
 export class ProcessedCVRepositoryAdapter implements ProcessedCVRepositoryPort {
-  private readonly pool?: Pool;
 
-  constructor() {
-    if (config.postgres.url) {
-      this.pool = new Pool({ connectionString: config.postgres.url });
-    }
+  private getPool() {
+    return getPool();
   }
 
-  private readonly store = new Map<string, { cv: StructuredCV; vectors: VectorRecord[] }>();
-
   async save(cv: StructuredCV, vectors: VectorRecord[]): Promise<void> {
-    if (this.pool) {
-      await this.pool.query(
+    const pool = this.getPool();
+    if (pool) {
+      await pool.query(
         `insert into processed_cvs (id, cv, vectors)
          values ($1, $2::jsonb, $3::jsonb)
          on conflict (id) do update set cv = excluded.cv, vectors = excluded.vectors, updated_at = now()`,
@@ -25,19 +20,12 @@ export class ProcessedCVRepositoryAdapter implements ProcessedCVRepositoryPort {
       );
       return;
     }
-
-    this.store.set(cv.id, { cv, vectors });
-
-    console.log("Saved processed CV to normal DB:", {
-      id: cv.id,
-      sections: cv.sections.length,
-      vectors: vectors.length
-    });
   }
 
   async findById(cvId: string): Promise<{ cv: StructuredCV; vectors: VectorRecord[] } | null> {
-    if (this.pool) {
-      const res = await this.pool.query(
+    const pool = this.getPool();
+    if (pool) {
+      const res = await pool.query(
         `select cv, vectors from processed_cvs where id = $1 limit 1`,
         [cvId]
       );
@@ -48,10 +36,66 @@ export class ProcessedCVRepositoryAdapter implements ProcessedCVRepositoryPort {
         vectors: res.rows[0].vectors as VectorRecord[]
       };
     }
-
-    const existing = this.store.get(cvId);
-    if (existing) return existing;
-
     return null;
   }
+
+  async update(cvId: string, cv: StructuredCV, vectors: VectorRecord[]): Promise<void> {
+    const pool = this.getPool();
+    if (pool) {
+      const res = await pool.query(
+        `update processed_cvs set cv = $2::jsonb, vectors = $3::jsonb, updated_at = now()
+         where id = $1`,
+        [cvId, JSON.stringify(cv), JSON.stringify(vectors)]
+      );
+
+      if (res.rowCount === 0) {
+        throw new Error(`CV with id ${cvId} not found`);
+      }
+      return;
+    }
+  }
+
+  async delete(cvId: string): Promise<void> {
+    const pool = this.getPool();
+    if (pool) {
+      const res = await pool.query(
+        `delete from processed_cvs where id = $1`,
+        [cvId]
+      );
+
+      if (res.rowCount === 0) {
+        throw new Error(`CV with id ${cvId} not found`);
+      }
+      return;
+    }
+  }
+
+  async findAll(): Promise<{ cv: StructuredCV; vectors: VectorRecord[] }[]> {
+    const pool = this.getPool();
+    if (pool) {
+      const res = await pool.query(
+        `select cv, vectors from processed_cvs order by created_at desc`
+      );
+
+      return res.rows.map(row => ({
+        cv: row.cv as StructuredCV,
+        vectors: row.vectors as VectorRecord[]
+      }));
+    }
+    return [];
+  }
+
+  async exists(cvId: string): Promise<boolean> {
+    const pool = this.getPool();
+    if (pool) {
+      const res = await pool.query(
+        `select 1 from processed_cvs where id = $1 limit 1`,
+        [cvId]
+      );
+
+      return res.rowCount !== null && res.rowCount > 0;
+    }
+    return false;
+  }
 }
+
