@@ -8,7 +8,7 @@ export const Routes = (): Router => {
   [
     {
       path: '/cv-ingestion',
-      route: CvIngestionContainer.createRouter(),
+      route: CvIngestionContainer.getInstance().getRoutes(),
     },
     {
       path: '/chat',
