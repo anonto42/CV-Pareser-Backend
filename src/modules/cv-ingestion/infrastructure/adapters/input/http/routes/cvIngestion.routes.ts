@@ -4,24 +4,10 @@ import validateRequest from '../../../../../../../shared/infrastructure/middlewa
 import { CVIngestionValidator } from './../validator/cvIngestion.validator';
 import { uploadSingleCVToDisk } from './../../../../../../../shared/infrastructure/middlewares/fileUpload.middleware';
 
-export class CvIngestionRoutes {
-  public router: Router;
+export function createCvIngestionRoutes(controller: CvIngestionController): Router {
+  const router = Router();
 
-  constructor(
-    private readonly controller: CvIngestionController
-  ) {
-    this.router = Router();
-    this.initializeRoutes();
-  }
+  router.route('/upload-pdf').post(uploadSingleCVToDisk, validateRequest(CVIngestionValidator.pdfUpload), controller.uploadPDF);
 
-  private initializeRoutes(): void {
-    this.router
-    .route('/upload-pdf')
-    .post(
-      uploadSingleCVToDisk,
-      validateRequest(CVIngestionValidator.pdfUpload),
-      this.controller.uploadPDF
-    );
-
-  }
+  return router;
 }
