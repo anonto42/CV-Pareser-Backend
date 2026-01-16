@@ -1,6 +1,6 @@
 import { CVSectionType } from "./StructuredCV.dto";
 
-export type VectorRecord = {
+export interface VectorRecord {
   id: string;
   text: string;
   embedding?: number[];
