@@ -15,25 +15,16 @@ export class UploadPDFCVUseCaseImpl implements UploadPDFCVUseCase {
   ) {}
 
   async execute(file: SingleFile): Promise<string> {
-    try {
+    const parsedData = await this.fileParser.parsePDF(file);
 
-      // Parse the PDF
-      const parsedData = await this.fileParser.parsePDF(file);
-
-      // Business logic/validation here
-      if (!parsedData) {
-        throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to parse CV');
-      }
-
-      // Send data to process Hexgon
-      const savedCV = await this.cvRepository.save(parsedData);
-      
-      await this.dataForProcessUseCase.execute(new ProcessDataFormet(parsedData.text, 'this is the id'));
-      
-      return savedCV;
-
-    } catch (error) {
-      throw error;
+    if (!parsedData) {
+      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to parse CV');
     }
+
+    const savedCV = await this.cvRepository.save(parsedData);
+      
+    await this.dataForProcessUseCase.execute(new ProcessDataFormet(parsedData.text, savedCV));
+      
+    return savedCV;
   }
 }
