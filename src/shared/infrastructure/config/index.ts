@@ -9,6 +9,10 @@ export default {
     host: process.env.HOST?.toString() || 'localhost',
   },
 
+  postgres: {
+    url: process.env.POSTGRES_URL || '',
+  },
+
   openai: {
     apiKey: process.env.OPENAI_API_KEY || '',
     embeddingModel: 'text-embedding-3-small',
@@ -21,7 +25,12 @@ export default {
   },
 
   vector: {
-    dimension: 1536, // OpenAI embedding dimension
+    dimension: 384, // Xenova embedding dimension
     collection: 'cv_embeddings',
+  },
+
+  qdrant: {
+    url: process.env.QDRANT_URL || 'http://localhost:6333',
+    apiKey: process.env.QDRANT_API_KEY || '',
   },
 };

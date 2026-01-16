@@ -1,33 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import { UploadPDFCVUseCase } from "../../../../../application/ports/input/UploadPDFCVUseCase";
-import sendResponse from '../../../../../../../shared/infrastructure/helper/sendResponse.helper';
+import sendResponse from '../../../../../../../shared/infrastructure/helpers/sendResponse.helper';
+import catchAsync from '../../../../../../../shared/infrastructure/helpers/catchAsync.helper';
+import ApiError from "../../../../../../../shared/infrastructure/errors/api.error";
+import { StatusCodes } from "http-status-codes";
 
 export class CvIngestionController {
   constructor(
     private readonly uploadPdfUseCase: UploadPDFCVUseCase
   ) {}
 
-  uploadPDF = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (!req.file || !req.file.buffer) {
-        return sendResponse(res, {
-          success: false,
-          statusCode: 400,
-          message: 'No file uploaded',
-          data: null
-        });
-      }
+  uploadPDF = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  
+    if (!req.file) throw new ApiError(StatusCodes.BAD_REQUEST, 'No file uploaded');
 
-      const cvId = await this.uploadPdfUseCase.execute(req.file.buffer);
-      
-      sendResponse(res, {
-        success: true,
-        statusCode: 201,
-        message: 'CV uploaded successfully',
-        data: { cvId }
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
+    const response = await this.uploadPdfUseCase.execute(req.file);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.CREATED,
+      message: 'CV uploaded successfully',
+      data: response
+    });
+  });
 }
