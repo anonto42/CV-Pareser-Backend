@@ -16,6 +16,7 @@ export type CVSection = {
 
 export type StructuredCV = {
   id: string;
+  filePath: string;
   personal: {
     name?: string;
     email?: string;
