@@ -9,6 +9,16 @@ const pdfUploadValidator = z.object({
     query: z.object({}).strict(),
 })
 
+const csvUploadValidator = z.object({
+    body: z.object({}).strict(),
+    file: z.object({
+        fieldname: z.string({ required_error: "CSV file is required" }),
+    }).optional(),
+    params: z.object({}).strict(),
+    query: z.object({}).strict(),
+})
+
 export const CVIngestionValidator = {
-    pdfUpload: pdfUploadValidator
+    pdfUpload: pdfUploadValidator,
+    csvUpload: csvUploadValidator
 }
