@@ -6,6 +6,7 @@ import { ProcessedCVRepositoryPort } from "../../../../shared/application/port/o
 import { VectorDBPort } from "../../../../shared/application/port/output/VactorDB.port";
 import { EmbeddingModelPort } from "../../../../shared/application/port/output/EmbeddingModel.port";
 import { XenovaEmbeddingAdapter } from "../../../../shared/infrastructure/adapter/output/embedding/Xenova.embedding.adapter";
+import { v4 as uuidv4 } from "uuid";
 
 const HEADER_MAP: Array<{ header: RegExp; type: CVSectionType }> = [
   { header: /^summary$/i, type: "summary" },
@@ -33,7 +34,8 @@ export class DataForProcessUseCaseImpl implements DataForProcessUseCase {
     const sections = this.splitIntoSections(normalized);
 
     const structured: StructuredCV = {
-      id: data.id,
+      id: uuidv4(),
+      filePath: data.filePath,
       personal: {
         name: this.guessName(normalized),
         email: this.extractEmail(normalized),
