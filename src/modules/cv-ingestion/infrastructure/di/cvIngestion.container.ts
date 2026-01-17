@@ -1,9 +1,8 @@
 import { UploadPDFCVUseCaseImpl } from '../../application/usecases/UploadPDFCV.usecase';
-import { CVRepositoryAdapter } from '../adapters/output/persistence/CVRepository.adapter';
 import { FileParserAdapter } from '../adapters/output/parsers/FileParser.adapter';
 import { CvIngestionController } from '../adapters/input/http/controllers/CvIngestion.controller';
-import { CvProcessContainer } from '../../../cv-process/infrastructure/di/cvProcess.container';
 import { createCvIngestionRoutes } from '../adapters/input/http/routes/cvIngestion.routes';
+import { CvProcessContainer } from '../../../cv-process/infrastructure/di/cvProcess.container';
 
 export class CvIngestionContainer {
   private static instance: CvIngestionContainer;
@@ -12,15 +11,12 @@ export class CvIngestionContainer {
   private cvIngestionController: CvIngestionController;
 
   private constructor() {
-    const cvRepository = new CVRepositoryAdapter();
     const fileParser = new FileParserAdapter();
-
-    const dataForProcessUseCase = CvProcessContainer.createDataForProcessUseCase();
+    const dataProcessor = CvProcessContainer.createDataForProcessUseCase();
 
     this.uploadPdfUseCase = new UploadPDFCVUseCaseImpl(
-      cvRepository,
       fileParser,
-      dataForProcessUseCase
+      dataProcessor
     );
 
     this.cvIngestionController = new CvIngestionController(this.uploadPdfUseCase);
