@@ -1,7 +1,5 @@
 
-export class ProcessDataFormet {
-  constructor(
-    public text: string,
-    public id: string
-  ){}
+export type ProcessDataFormet = {
+  text: string;
+  filePath: string;
 }
